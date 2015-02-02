@@ -1,5 +1,5 @@
 # disk-based-mergesort
-A program that performs the following merge sort techniques on records for large files:
+A program that performs the following merge sort techniques on records for large files when input buffer in memory is limited:
 
 <ol>
 <li> Basic merge sort </li>
