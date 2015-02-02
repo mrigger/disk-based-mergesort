@@ -17,6 +17,7 @@
 
 #define DEBUG 0
 
+//Cosntants for the project
 #define IN_BUFF_SIZE 1000
 #define OUT_BUFF_SIZE 1000
 
