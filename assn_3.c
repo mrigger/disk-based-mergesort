@@ -149,7 +149,7 @@ int prepare_presort_files()
 }
 
 
-
+//Basic mergersort with n way merge of 'n' input buffer chunks
 void basic()
 {
 #if DEBUG
@@ -202,7 +202,9 @@ void n_way_merge(int n)
                 {       
                         no_of_recs = fread(in_buf, sizeof(int),IN_BUFF_SIZE, fp_temp_t);
                         if(no_of_recs == 0 || (feof(fp_temp_t)))
+                        {
                                 break;
+                        }
                         for(p=0;p<no_of_recs;p++)
                         {
                                 out_buf[p] = in_buf[p];
@@ -307,6 +309,7 @@ void n_way_merge(int n)
                 row_tmp = col_tmp = 0;
                 smallest = INT_MAX;
                 index = 0;
+                //Read into in buff array the "chunks" of the file
                 for(i = 0; i < n; i++)
                 {
                         if(file_completed[i] == 1)
@@ -327,7 +330,7 @@ void n_way_merge(int n)
                 {
                         row_completed[row] = 1;
                 }        
-      
+      		//If any chunk in array completed, read in more data for that chunk
                 if(row_completed[row] == 1)
                 {
                         int a;
@@ -404,7 +407,7 @@ void n_way_merge(int n)
 }
 
 
-
+//Multi step merge -- Run merge sort on multiple intermediate files
 void multistep()
 {
 
@@ -447,7 +450,7 @@ void multistep()
 }
 
 
-
+//Merge sort and produce the intermediate super run files 
 void produce_super_run(int n)
 {
 
@@ -638,8 +641,7 @@ void produce_super_run(int n)
 }
 
 
-
-
+//Merge all the super run files to produce the final sorted file 
 void merge_super_run(int n)
 {
 #if DEBUG        
@@ -863,7 +865,7 @@ void merge_super_run(int n)
         fclose(op_fp);
 }
 
-
+//Replacement selection technique
 void replace_sel()
 {
 #if DEBUG
@@ -895,7 +897,7 @@ void replace_sel()
                 return;        
         }
         
-        if(ret < 750)
+        if(ret < 750)//Just sort and write to out buffer
         {
                 prim_heap_size = ret;
                 FILE *op_fp_t;
@@ -935,7 +937,7 @@ void replace_sel()
         strcat(file_name_tmp1, num_tmp1);
         fp_temp = fopen(file_name_tmp1, "wb+");
 
-		int g;
+	int g;
         if(feof(index_fp) && (ret == 0))
         {
                 is_inp_over = 1;
@@ -945,7 +947,6 @@ void replace_sel()
         build_heap(min_heap, prim_heap_size);
         while(1)
         {
-                
                 heap_min = min_heap[0];
                 out_buf[op_index] = heap_min;
                 op_index++;
@@ -972,7 +973,7 @@ void replace_sel()
                 }        
                 
                 
-                if(sec_heap_size == 750)
+                if(sec_heap_size == 750) //Sec heap full
                 {
                         fwrite( out_buf, sizeof( int ), op_index, fp_temp );        
                         total_c += op_index;
@@ -1014,7 +1015,7 @@ void replace_sel()
         prim_heap_size_tmp = prim_heap_size;
         op_index = 0;
         
-        if(prim_heap_size > 0)
+        if(prim_heap_size > 0) //Write leftover in primary heap to out buffer
         {
                 build_heap(min_heap, prim_heap_size);
                 while(prim_heap_size > 0)
@@ -1034,7 +1035,7 @@ void replace_sel()
         
         build_heap(min_heap+prim_heap_size_tmp, sec_heap_size);
         
-        while(sec_heap_size > 0)
+        while(sec_heap_size > 0) //Write leftover in secondary heap to out buffer
         {
                 out_buf[op_index] = min_heap[prim_heap_size_tmp];
                 min_heap[prim_heap_size_tmp] = min_heap[prim_heap_size_tmp + sec_heap_size - 1];
@@ -1042,7 +1043,6 @@ void replace_sel()
                 min_heapify(min_heap+prim_heap_size_tmp,1, sec_heap_size);
                 op_index++;
         }
-        
         
         char file_name_tmp2[100];
         char num_tmp2[10];
@@ -1060,7 +1060,7 @@ void replace_sel()
         n_way_merge(file_num+1);            
 } 
 
-        
+//Stock code for min heap build      
 void build_heap(int *heap_array, int heap_size)
 {
         
@@ -1071,7 +1071,7 @@ void build_heap(int *heap_array, int heap_size)
         }
 }
 
-
+//Stock code for min heapify
 void min_heapify(int *heap_array, int i, int heap_length)
 {
         
