@@ -20,8 +20,6 @@ int main(int argc, char **argv)
         int no_of_keys = 0;
         struct timeval tm_start, tm_end, exec_tm;
         
-        strcpy(o_filename,argv[3]);
-
         if(argc != 4)
         {
                 printf("Usage: assn_3 merge-sort-method index-file sorted-index-file\n");
@@ -67,6 +65,8 @@ int main(int argc, char **argv)
         rewind(index_fp);
 
         strcpy(i_filename,argv[2]);
+        strcpy(o_filename,argv[3]);
+
 #if DEBUG
         printf("The number of keys in the file is %d\n", no_of_keys);
 #endif         
